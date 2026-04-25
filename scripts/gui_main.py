@@ -570,7 +570,7 @@ AI File Repair v1.0.0
         self.progress_bar = ttk.Progressbar(status_frame, 
                                            variable=self.progress_var,
                                            maximum=100, mode='determinate',
-                                           style='Custom.TProgressbar')
+                                           )
         self.progress_bar.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=15)
         
         self.files_count_label = tk.Label(status_frame, text="文件: 0/0", 
