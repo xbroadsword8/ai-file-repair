@@ -309,6 +309,16 @@ AI File Repair v1.0.0
         
         self.root.configure(bg=self.colors['bg'])
         
+        # ============= 樣式定制 =============
+        style = ttk.Style()
+        style.theme_use('clam')
+        style.configure('Custom.TProgressbar', 
+                       troughcolor=self.colors['bg'],
+                       background=self.colors['success'])
+        style.configure('Horizontal.Custom.TProgressbar', 
+                       troughcolor=self.colors['bg'],
+                       background=self.colors['success'])
+        
         # ============= 顶部菜单栏 =============
         self.create_menubar()
         
@@ -577,11 +587,6 @@ AI File Repair v1.0.0
                                          fg=self.colors['text_secondary'],
                                          font=('Segoe UI', 9))
         self.files_count_label.pack(side=tk.RIGHT, padx=15)
-        
-        # ============= 樣式定制 =============
-        style.configure('Custom.TProgressbar', 
-                       troughcolor=self.colors['bg'],
-                       background=self.colors['success'])
         
     def bind_events(self):
         """綁定事件"""
