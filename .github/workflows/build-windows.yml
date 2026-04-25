@@ -43,9 +43,8 @@ jobs:
 
       - name: Build executable
         run: |
-          cd scripts
-          pyinstaller --onefile --windowed --name "${env:BUILD_NAME}" ^
-            gui_main.py
+          Set-Location scripts
+          pyinstaller --onefile --windowed --name "${env:BUILD_NAME}" gui_main.py
         shell: pwsh
 
       - name: Upload artifact
