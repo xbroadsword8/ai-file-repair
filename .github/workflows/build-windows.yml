@@ -60,11 +60,3 @@ jobs:
           name: AI-File-Repair-Windows
           path: scripts/dist/AI File Repair.exe
           retention-days: 7
-      
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: scripts/dist/AI File Repair.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
