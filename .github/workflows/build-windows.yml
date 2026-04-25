@@ -17,6 +17,7 @@ on:
 env:
   PYTHON_VERSION: '3.11'
   BUILD_NAME: 'AI File Repair'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   build-windows:
@@ -44,7 +45,6 @@ jobs:
         run: |
           cd scripts
           pyinstaller --onefile --windowed --name "${env:BUILD_NAME}" ^
-            --add-data "assets;assets" ^
             gui_main.py
         shell: pwsh
 
