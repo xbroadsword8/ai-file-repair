@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-file-repair"
+version = "1.0.2"
+description = "AI File Repair - Intelligent document repair tool"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "xmacclaw", email = "ci@github.com"}
+]
+
+dependencies = [
+    "tkinter>=1.0.0",
+    "requests>=2.31.0",
+    "requests-oauthlib>=1.3.0",
+    "pyyaml>=6.0.0",
+]
+
+[project.scripts]
+ai-file-repair = "scripts.gui_main:main"
+
+[tool.setuptools.packages.find]
+where = ["scripts"]
+
+[tool.pytest.ini_options]
+addopts = "-v"
+testpaths = ["scripts"]
