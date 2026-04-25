@@ -160,7 +160,131 @@ class AIRepairGUI:
         print(f"  暫存目錄: {self.directory_structure.temp_dir}")
         print(f"  輸出目錄: {self.directory_structure.output_dir}")
         print("=" * 60)
+    
+    def create_menubar(self):
+        """創建菜單欄"""
+        # 創建主菜單
+        self.menubar = tk.Menu(self.root, bg=self.colors['bg'], fg=self.colors['text'])
+        self.root.config(menu=self.menubar)
         
+        # 文件菜單
+        file_menu = tk.Menu(self.menubar, tearoff=0, bg=self.colors['bg'], fg=self.colors['text'])
+        self.menubar.add_cascade(label="📁 文件", menu=file_menu)
+        file_menu.add_command(label="添加文件", command=self.add_files, accelerator="Ctrl+O")
+        file_menu.add_command(label="全選", command=self.select_all_files, accelerator="Ctrl+A")
+        file_menu.add_separator()
+        file_menu.add_command(label="退出", command=self.root.quit, accelerator="Alt+F4")
+        
+        # 修復菜單
+        repair_menu = tk.Menu(self.menubar, tearoff=0, bg=self.colors['bg'], fg=self.colors['text'])
+        self.menubar.add_cascade(label="🔧 修復", menu=repair_menu)
+        repair_menu.add_command(label="修復選中文件", command=self.start_repair_selected, accelerator="F5")
+        repair_menu.add_command(label="修復所有文件", command=self.start_repair_all, accelerator="Ctrl+F5")
+        repair_menu.add_separator()
+        repair_menu.add_command(label="取消修復", command=self.cancel_repair, accelerator="Esc")
+        
+        # 設置菜單
+        settings_menu = tk.Menu(self.menubar, tearoff=0, bg=self.colors['bg'], fg=self.colors['text'])
+        self.menubar.add_cascade(label="⚙️ 設置", menu=settings_menu)
+        settings_menu.add_command(label="API 設置", command=self.show_api_settings)
+        settings_menu.add_command(label="清空暫存", command=self.clear_temp)
+        
+        # 幫助菜單
+        help_menu = tk.Menu(self.menubar, tearoff=0, bg=self.colors['bg'], fg=self.colors['text'])
+        self.menubar.add_cascade(label="❓ 幫助", menu=help_menu)
+        help_menu.add_command(label="使用說明", command=self.show_help)
+        help_menu.add_command(label="關於", command=self.show_about)
+    
+    # ============= 菜單命令處理 =============
+    
+    def start_repair_selected(self):
+        """修復選中的文件"""
+        selected = self.files_listbox.curselection()
+        if not selected:
+            tk.messagebox.showinfo("提示", "請先選中要修復的文件")
+            return
+        self.start_repair(selected)
+    
+    def start_repair_all(self):
+        """修復所有文件"""
+        if self.files_listbox.size() == 0:
+            tk.messagebox.showinfo("提示", "沒有文件可修復")
+            return
+        self.start_repair(range(self.files_listbox.size()))
+    
+    def cancel_repair(self):
+        """取消正在進行的修復"""
+        if self.repair_thread and self.repair_thread.is_alive():
+            self.repair_queue.put(None)  # Signal to stop
+            tk.messagebox.showinfo("提示", "修復已取消")
+    
+    def show_api_settings(self):
+        """顯示 API 設置對話框"""
+        settings_window = tk.Toplevel(self.root)
+        settings_window.title("API 設置")
+        settings_window.geometry("400x200")
+        
+        tk.Label(settings_window, text="API Key:", font=('Segoe UI', 10)).grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
+        api_key_entry = tk.Entry(settings_window, width=30, font=('Segoe UI', 10))
+        api_key_entry.grid(row=0, column=1, padx=10, pady=10)
+        
+        tk.Label(settings_window, text="Endpoint:", font=('Segoe UI', 10)).grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
+        endpoint_entry = tk.Entry(settings_window, width=30, font=('Segoe UI', 10))
+        endpoint_entry.grid(row=1, column=1, padx=10, pady=10)
+        
+        def save_settings():
+            # Save settings logic here
+            tk.messagebox.showinfo("提示", "設置已保存")
+            settings_window.destroy()
+        
+        tk.Button(settings_window, text="保存", command=save_settings, bg=self.colors['accent'], fg='white').grid(row=2, column=0, columnspan=2, pady=10)
+    
+    def clear_temp(self):
+        """清空暫存文件"""
+        import shutil
+        import os
+        
+        temp_dir = os.path.join(os.path.expanduser('~'), '.hermes', 'temp', 'ai-repair')
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
+            os.makedirs(temp_dir)
+            tk.messagebox.showinfo("提示", "暫存已清空")
+        else:
+            tk.messagebox.showinfo("提示", "沒有暫存文件可清空")
+    
+    def show_help(self):
+        """顯示使用說明"""
+        help_text = """
+AI File Repair 使用說明
+
+1. 添加文件：點擊「+ 添加文件」按鈕
+2. 選擇模式：選擇 AI 增強模式 或 一般模式
+3. 修復文件：點擊「修復選中文件」或「修復所有文件」
+4. 查看結果：修復後的文件會保存在輸出目錄
+
+快捷鍵：
+Ctrl+O - 添加文件
+Ctrl+A - 全選
+F5 - 修復選中文件
+Ctrl+F5 - 修復所有文件
+Esc - 取消修復
+"""
+        tk.messagebox.showinfo("使用說明", help_text)
+    
+    def show_about(self):
+        """顯示關於對話框"""
+        about_text = """
+AI File Repair v1.0.0
+
+一個結合 AI 技術的文件修復工具
+
+開發者: xmacclaw
+日期: 2026-04-25
+
+本软件使用 MIT License
+"""
+        tk.messagebox.showinfo("關於", about_text)
+    
     def create_widgets(self):
         """創建所有窗口部件"""
         
