@@ -138,6 +138,24 @@ class AIRepairGUI:
         self.repair_queue = queue.Queue()
         self.directory_structure = dirs
         
+        # 初始化 colors (必須在 create_widgets 之前)
+        self.colors = {
+            'bg': '#2b2b2b',
+            'panel': '#3c3c3c',
+            'accent': '#007acc',
+            'ai_mode': '#007acc',
+            'standard_mode': '#2d5a27',
+            'text': '#ffffff',
+            'text_secondary': '#a0a0a0',
+            'success': '#4caf50',
+            'warning': '#ff9800',
+            'error': '#f44336',
+            'border': '#505050'
+        }
+        
+        # 設置 root 背景
+        self.root.configure(bg=self.colors['bg'])
+        
         # 創建界面
         self.create_widgets()
         self.bind_events()
@@ -289,33 +307,13 @@ AI File Repair v1.0.0
         """創建所有窗口部件"""
         
         # 設置主題
-        style = ttk.Style()
-        style.theme_use('clam')
+        self.style = ttk.Style()
+        self.style.theme_use('clam')
         
-        # 自定義顏色
-        self.colors = {
-            'bg': '#2b2b2b',
-            'panel': '#3c3c3c',
-            'accent': '#007acc',
-            'ai_mode': '#007acc',
-            'standard_mode': '#2d5a27',
-            'text': '#ffffff',
-            'text_secondary': '#a0a0a0',
-            'success': '#4caf50',
-            'warning': '#ff9800',
-            'error': '#f44336',
-            'border': '#505050'
-        }
-        
-        self.root.configure(bg=self.colors['bg'])
-        
-        # ============= 樣式定制 =============
-        style = ttk.Style()
-        style.theme_use('clam')
-        style.configure('Custom.TProgressbar', 
+        self.style.configure('Custom.TProgressbar', 
                        troughcolor=self.colors['bg'],
                        background=self.colors['success'])
-        style.configure('Horizontal.Custom.TProgressbar', 
+        self.style.configure('Horizontal.Custom.TProgressbar', 
                        troughcolor=self.colors['bg'],
                        background=self.colors['success'])
         
