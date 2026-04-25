@@ -6,10 +6,7 @@ name: Build Windows Executable
 # 觸發條件
 on:
   push:
-    branches: [main, master]
     tags: ['v*']
-  pull_request:
-    branches: [main, master]
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
