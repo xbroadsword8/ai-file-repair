@@ -47,16 +47,21 @@ jobs:
           pyinstaller --onefile --windowed --name "${env:BUILD_NAME}" gui_main.py
         shell: pwsh
 
+      - name: List files
+        run: |
+          Get-ChildItem scripts/dist/
+        shell: pwsh
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: AI-File-Repair-Windows
-          path: scripts/dist/${env:BUILD_NAME}.exe
+          path: scripts/dist/AI File Repair.exe
           retention-days: 7
 
       - name: Upload to Release
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         uses: softprops/action-gh-release@v1
         with:
-          files: scripts/dist/${env:BUILD_NAME}.exe
+          files: scripts/dist/AI File Repair.exe
           generate_release_notes: true
