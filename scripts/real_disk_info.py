@@ -207,7 +207,7 @@ class DiskInfoCollector:
             result = subprocess.run(
                 ['powershell', '-Command', 
                  'Get-CimInstance -ClassName Win32_DiskDrive | Select-Object -Property DeviceID, Model, SerialNumber, FirmwareRevision, InterfaceType, Size | Format-Table -HideTableHeaders'],
-                capture_output=True, text=True, timeout=30
+                capture_output=True, text=True, timeout=60
             )
             
             if result.returncode == 0:
@@ -256,7 +256,7 @@ class DiskInfoCollector:
                 
                 # Get drive geometry
                 # Note: DISK_GEOMETRY is 20 bytes, not 24
-                geometry = ctypes.create_string_buffer(20)
+                geometry = ctypes.create_string_buffer(48)
                 bytes_returned = ctypes.c_ulong()
                 
                 # Use IOCTL_DISK_GET_DRIVE_GEOMETRY_EX (0x700A0) for proper 24-byte struct
@@ -265,19 +265,19 @@ class DiskInfoCollector:
                     handle,
                     0x700A0,  # IOCTL_DISK_GET_DRIVE_GEOMETRY_EX
                     None, 0,
-                    geometry, 24,
+                    geometry, 48,
                     ctypes.byref(bytes_returned),
                     None
                 )
                 
                 if not result:
                     # Fallback to old IOCTL if EX version fails
-                    geometry = ctypes.create_string_buffer(20)
+                    geometry = ctypes.create_string_buffer(48)
                     result = ctypes.windll.kernel32.DeviceIoControl(
                         handle,
                         0x70000,  # IOCTL_DISK_GET_DRIVE_GEOMETRY (old)
                         None, 0,
-                        geometry, 20,
+                        geometry, 48,
                         ctypes.byref(bytes_returned),
                         None
                     )
@@ -330,7 +330,7 @@ class DiskInfoCollector:
             # Use lsblk for block device info
             result = subprocess.run(
                 ['lsblk', '-J', '-o', 'NAME,SIZE,TYPE,MOUNTPOINT,LABEL,MODEL,TRAN,STATE'],
-                capture_output=True, text=True
+                capture_output=True, text=True, shell=True
             )
             
             if result.returncode == 0:
@@ -344,7 +344,7 @@ class DiskInfoCollector:
                             device_name=block['name'],
                             size_bytes=int(block.get('size', 0)),
                             sector_size=512,  # Default, can be refined
-                            num_sectors=int(block.get('size', 0)) // 512,
+                            num_sectors=int(block.get('size', 0)) // int(block.get('sectors', 8)),
                             model=block.get('model', ''),
                             serial='',  # Need hdparm for this
                             vendor='',  # Need to parse from model
@@ -405,7 +405,7 @@ class DiskInfoCollector:
         try:
             result = subprocess.run(
                 ['df', '-h'],
-                capture_output=True, text=True
+                capture_output=True, text=True, shell=True
             )
             
             if result.returncode == 0:
@@ -458,7 +458,7 @@ class DiskInfoCollector:
             # 包含所有 block devices: sd*, nvme*, mmcblk*, etc.
             result = subprocess.run(
                 ['ls', '-l', '/dev/{sd,nvme,mmcblk}*'],
-                capture_output=True, text=True
+                capture_output=True, text=True, shell=True
             )
             
             if result.returncode == 0:
