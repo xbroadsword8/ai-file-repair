@@ -310,13 +310,6 @@ AI File Repair v1.0.0
         self.style = ttk.Style()
         self.style.theme_use('clam')
         
-        self.style.configure('Custom.TProgressbar', 
-                       troughcolor=self.colors['bg'],
-                       background=self.colors['success'])
-        self.style.configure('Horizontal.Custom.TProgressbar', 
-                       troughcolor=self.colors['bg'],
-                       background=self.colors['success'])
-        
         # ============= 顶部菜单栏 =============
         self.create_menubar()
         
