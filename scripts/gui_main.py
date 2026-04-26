@@ -743,6 +743,12 @@ class DiskRecoveryApp:
                 print(f"  ✓ {drive_letter}: {size_gb:.2f} GB - {model or 'Unknown'}")
                 
                 scanner.close()
+        
+        # Enable the scan button after hardware scan completes
+        self.scan_btn.config(state=tk.NORMAL)
+        
+        # Show completion status
+        self.status_label.config(text=f"✓ 硬體掃描完成 - 找到 {self.disk_list.size()} 顆磁碟")
     
     def select_disk(self):
         """選擇磁碟"""
