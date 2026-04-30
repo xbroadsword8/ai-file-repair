@@ -36,15 +36,14 @@ jobs:
       
       - name: Build executable
         run: |
-          cd scripts
-          python -m PyInstaller --onefile --windowed --name "AI File Repair" gui_main.py
+          python -m PyInstaller --onefile --windowed --name "ai-file-repair" gui/gui_main.py
         shell: pwsh
       
       - name: Verify build
         run: |
-          if (Test-Path "scripts/dist/AI File Repair.exe") {
+          if (Test-Path "dist/ai-file-repair.exe") {
             Write-Host "Build successful!"
-            Get-Item "scripts/dist/AI File Repair.exe" | Select-Object Name, Length, LastWriteTime
+            Get-Item "dist/ai-file-repair.exe" | Select-Object Name, Length, LastWriteTime
           } else {
             Write-Host "Build failed! File not found."
             exit 1
@@ -54,6 +53,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AI-File-Repair-Windows
-          path: scripts/dist/AI File Repair.exe
+          name: ai-file-repair-windows
+          path: dist/ai-file-repair.exe
           retention-days: 7
