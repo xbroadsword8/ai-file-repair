@@ -14,7 +14,7 @@ RAW Scan Engine — Improved Disk Recovery Scanner
 import struct
 from dataclasses import dataclass, field
 from typing import List, Optional, Dict, Set, Tuple
-from interfaces import DiskScanner, RawScanResult, BadSectorPolicy
+from .interfaces import DiskScanner, RawScanResult, BadSectorPolicy
 
 
 # ---------------------------------------------------------------------------

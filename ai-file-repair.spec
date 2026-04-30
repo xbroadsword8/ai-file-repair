@@ -2,11 +2,39 @@
 
 
 a = Analysis(
-    ['gui/gui_main.py'],
+    ['main.py'],
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=[],
+    hiddenimports=[
+        # Core modules
+        'core.interfaces',
+        'core.disk_recovery',
+        'core.raw_scan',
+        'core.disk_sector_scanner',
+        'core.ntfs_mft',
+        'core.ntfs_mft_parser',
+        'core.researched_disk_recovery',
+        'core.core_disk_recovery',
+        'core.real_disk_info',
+        'core.real_disk_scanner',
+        # GUI modules
+        'gui.gui_main',
+        'gui.finaldata_style_gui',
+        'gui.comprehensive_disk_recovery',
+        # Utils modules
+        'utils.file_size_estimator',
+        'utils.eula_display',
+        'utils.ai_repair',
+        'utils.ai_repair_engine',
+        'utils.build_with_eula',
+        'utils.disk_repair',
+        'utils.reconstruction',
+        'utils.generate_eula_pdf',
+        'utils.bad_sector_handler',
+        'utils.repair_engine',
+        'tkinter',
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
